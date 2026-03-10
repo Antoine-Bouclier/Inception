@@ -1,8 +1,11 @@
+# syntax=docker/dockerfile:1
+
+# Base image
 FROM debian:bookworm
 
-
-# Instalation of Nginx and  OpenSSL
+# Install app dependencies
 RUN apt update && apt install -y nginx openssl
+# This "RUN" instruction executes a shell that updates the APT package index and installs Nginx and OpenSSL tools in the container.
 
 # Creation of the directory for security key. (SSL)
 RUN mkdir -p /etc/nginx/ssl
@@ -18,6 +21,8 @@ RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/ngin
 # copy the file configuration from host to the image
 COPY conf/nginx.conf /etc/mginx/conf.d/default.conf
 
+# The "expose" instrcution marks that our final image has a service listening on port 443
 EXPOSE 443
 
+# "CMD" instructions sets the command that is run when the user starts a container based on this image
 CMD ["nginx", "-g", "daemon off;"]
