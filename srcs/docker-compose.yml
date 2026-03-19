@@ -1,56 +1,36 @@
-version: '3.8'
-
-services:
-  mariadb:
-    build: ./requirements/mariadb
-    container_name: mariadb
-    restart: always
-    env_file: .env
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - inception_network
-
-  wordpress:
-    depends_on:
-      - mariadb
-    build: ./requirements/wordpress
-    container_name: wordpress
-    restart: always
-    env_file: .env
-    volumes:
-      - wordpress_data:/var/www/html
-    networks:
-      - inception_network
+services: # Defines the list of containers to be launched
 
   nginx:
-    depends_on:
-      - wordpress
-    build: ./requirements/nginx
-    container_name: nginx
-    restart: always
-    env_file: .env
-    ports:
-      - "443:443"
-    volumes:
-      - wordpress_data:/var/www/html
-    networks:
-      - inception_network
 
+    # Name of the container as it will appear in 'docker ps'
+    container_name: nginx
+
+    # Instead of downloading a pre-made image, Docker builds it using our local Dockerfile
+    build:  ./requirements/nginx/
+
+    # Port mapping (Host:Container). Port 443 is the standard for HTTPS traffic
+    ports:  
+      - "443:443"
+
+    # Connects the container to the isolated network defined below
+    networks:
+      - inception_net
+
+    # Mounts a persistent volume to the container to prevent data loss if the container is deleted
+    volumes:
+      -  wordpress_data:/var/www/html
+
+    # Automatically restarts the container if it crashes or if the host machine reboots
+    restart: always
+
+# Global Network Definitions
 networks:
-  inception_network:
+  inception_net:
+    # Bridge mode: Creates a virtual switch so containers can communicate with each other
     driver: bridge
 
+# Global Volume Definitions (Persistent Storage)
 volumes:
-  mariadb_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/abouclie/data/mariadb
   wordpress_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/abouclie/data/wordpress
+    # Explicit name for the volume managed by Docker
+    name: wordpress_data
