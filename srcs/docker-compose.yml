@@ -1,26 +1,15 @@
-services: # Defines the list of containers to be launched
+services:
 
   nginx:
 
-    # Name of the container as it will appear in 'docker ps'
     container_name: nginx
-
-    # Instead of downloading a pre-made image, Docker builds it using our local Dockerfile
     build:  ./requirements/nginx/
-
-    # Port mapping (Host:Container). Port 443 is the standard for HTTPS traffic
     ports:  
       - "443:443"
-
-    # Connects the container to the isolated network defined below
     networks:
       - inception_net
-
-    # Mounts a persistent volume to the container to prevent data loss if the container is deleted
     volumes:
       -  wordpress_data:/var/www/html
-
-    # Automatically restarts the container if it crashes or if the host machine reboots
     restart: always
 
   mariadb:
@@ -38,21 +27,51 @@ services: # Defines the list of containers to be launched
     volumes:
       - mariadb_data:/var/lib/mysql
 
+  wordpress:
+
+    container_name: wordpress
+    build:  ./requirements/wordpress
+    networks:
+      - inception_net
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - mariadb
+
 # Global Network Definitions
 networks:
   inception_net:
-    # Bridge mode: Creates a virtual switch so containers can communicate with each other
     driver: bridge
 
 # Global Volume Definitions (Persistent Storage)
 volumes:
   wordpress_data:
-    # Explicit name for the volume managed by Docker
     name: wordpress_data
-  mariadb_data: {}
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/abouclie/data/wordpress # Path required by the subject
+  mariadb_data:
+    name: mariadb_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/abouclie/data/mariadb
 
 secrets:
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
