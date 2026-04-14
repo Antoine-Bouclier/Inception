@@ -4,7 +4,7 @@
 USER_PWD=$(cat /run/secrets/db_password)
 USER_ROOT_PWD=$(cat /run/secrets/db_root_password)
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
+# if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "First start: Initializing MariaDB."
 	# Initializes the mariadb data directory and creates the system tables
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
@@ -30,8 +30,8 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "Flush piviliges..."
 	mariadb -u root -p${USER_ROOT_PWD} -e "FLUSH PRIVILEGES;"
 
-	mariadb-admin -u root -p${USER_ROOT_PWD} shutdown
-fi
+	mariadb-admin -u root -p${USER_ROOT_PWD} --socket=/run/mysqld/mysqld.sock shutdown
+# fi
 
 echo "MariaDB is ready."
 chown -R mysql:mysql /var/lib/mysql

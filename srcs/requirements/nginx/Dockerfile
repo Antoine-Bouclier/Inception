@@ -38,7 +38,7 @@ RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/ngin
 COPY ./conf/nginx.conf /etc/nginx/site-available/nginx.conf
 
 # Create a symbolic link to activate the configuration
-RUN ln -s /etc/nginx/site-available/nginx.conf /etc/nginx/sites-enabled/
+RUN ln -s /etc/nginx/site-available/nginx.conf /etc/nginx/sites-enabled/nginx.conf
 
 # Remove the default configuration to prevent conflicts
 RUN rm -f /etc/nginx/sites-enabled/default
