@@ -3,68 +3,68 @@
 *This project has been created as part of the 42 curriculum by abouclie.*
 
 ## 1. Description
-Le projet **Inception** est une étape clé du cursus DevOps de 42. Son objectif est d'élargir les connaissances en administration système en gérant une infrastructure complète via **Docker**. Le projet consiste à mettre en place une pile web sécurisée (WordPress, MariaDB et Nginx), où chaque service s'exécute dans son propre conteneur dédié.
+The **Inception** project is a major milestone in the 42 DevOps curriculum. Its primary goal is to broaden system administration knowledge by managing a complete infrastructure using **Docker**. The project involves setting up a secure, multi-service web stack (WordPress, MariaDB, and Nginx), where each component runs in its own dedicated and isolated container.
 
-Toute l'infrastructure est construite "from scratch" en utilisant **Debian** comme image de base, garantissant une compréhension profonde de l'isolation des conteneurs, de la gestion des réseaux virtuels et de la persistance des données.
+The entire infrastructure is built "from scratch" using **Debian** as a base image, ensuring a deep understanding of container isolation, virtual network management, and data persistence.
 
 ## 2. Instructions
 
-### Prérequis
-* Un environnement Linux (VM ou natif).
-* **Docker** et **Docker Compose** installés.
-* L'utilitaire `make`.
+### Prerequisites
+* A Linux environment (VM or native).
+* **Docker** and **Docker Compose** installed.
+* The `make` utility.
 
-### Installation et Exécution
-1.  Clonez le dépôt.
-2.  Configurez votre fichier `/etc/hosts` sur la machine hôte :
+### Installation and Execution
+1.  Clone the repository.
+2.  Configure your `/etc/hosts` file on the host machine:
     ```bash
     echo "127.0.0.1 abouclie.42.fr" | sudo tee -a /etc/hosts
     ```
-3.  Placez vos identifiants sensibles dans le dossier `secrets/` et le fichier `srcs/.env`.
-4.  Lancez le projet à l'aide du Makefile :
+3.  Place your sensitive credentials in the `secrets/` directory and the `srcs/.env` file.
+4.  Launch the project using the Makefile:
     ```bash
     make
     ```
-    *Cette commande créera les répertoires nécessaires, construira les images et démarrera les conteneurs en mode détaché.*
+    *This command will create the necessary directories, build the custom images, and start the containers in detached mode.*
 
-## 3. Conception du Projet et Choix Techniques
+## 3. Project Design & Technical Choices
 
-### Architecture Docker
-Le projet repose sur une architecture de "micro-services". Chaque service (Nginx, MariaDB, WordPress) est isolé. Cette modularité garantit qu'une défaillance dans un service ne fait pas s'effondrer toute la pile et permet une maintenance indépendante.
+### Docker Architecture
+The project follows a "micro-services" architecture. Each service (Nginx, MariaDB, WordPress) is strictly isolated. This modularity ensures that a failure in one service does not crash the entire stack and allows for independent maintenance and updates.
 
-### Comparaisons Techniques
+### Technical Comparisons
 
-#### Machines Virtuelles vs Docker
-* **Machines Virtuelles :** Chaque VM inclut un système d'exploitation complet, consommant beaucoup de RAM et de CPU. Elles offrent une isolation forte mais sont lentes à démarrer.
-* **Docker :** Les conteneurs partagent le noyau de l'OS hôte, ce qui les rend légers, extrêmement rapides à démarrer et efficaces en ressources.
+#### Virtual Machines vs Docker
+* **Virtual Machines:** Each VM includes a full guest operating system, consuming significant RAM and CPU. They offer strong isolation but are slow to boot.
+* **Docker:** Containers share the host OS kernel, making them lightweight, extremely fast to start, and highly efficient in resource usage.
 
-#### Secrets vs Variables d'Environnement
-* **Variables d'Environnement :** Idéales pour les configurations non sensibles (noms de base de données, URLs). Cependant, elles peuvent être visibles via `docker inspect`.
-* **Secrets :** Gérés comme des fichiers montés dans `/run/secrets/`. Ils sont plus sécurisés car ils ne sont pas stockés dans l'image ni dans l'environnement, réduisant les risques d'exposition accidentelle.
+#### Secrets vs Environment Variables
+* **Environment Variables:** Ideal for non-sensitive configurations (database names, URLs). However, they remain visible via commands like `docker inspect`.
+* **Secrets:** Managed as files mounted in `/run/secrets/`. They are more secure because they are not stored in the image or the environment, significantly reducing the risk of accidental exposure.
 
 #### Docker Network vs Host Network
-* **Host Network :** Le conteneur partage directement l'IP et les ports de l'hôte. C'est rapide mais n'offre aucune isolation.
-* **Docker Network (Bridge) :** Crée un réseau virtuel isolé. Les services communiquent entre eux via leurs noms de conteneurs, tandis que seuls les ports nécessaires (443) sont exposés à l'extérieur.
+* **Host Network:** The container shares the host's IP and port space directly. It is fast but offers no network isolation.
+* **Docker Network (Bridge):** Creates an isolated virtual network. Services communicate with each other using container names as hostnames, while only required ports (443) are exposed to the outside world.
 
 #### Docker Volumes vs Bind Mounts
-* **Bind Mounts :** Lie un chemin spécifique de l'hôte au conteneur. Très dépendant de la structure de fichiers de l'hôte.
-* **Docker Volumes :** Gérés par Docker. Dans ce projet, nous utilisons des **Local Bind Mounts** au sein de volumes Docker pour garantir la persistance dans `/home/abouclie/data` tout en bénéficiant de la gestion des volumes Docker.
+* **Bind Mounts:** Directly maps a specific path from the host to the container. It is highly dependent on the host's file structure.
+* **Docker Volumes:** Managed by Docker. In this project, we use **Local Bind Mounts** within Docker Volumes to ensure data persistence in `/home/abouclie/data` while benefiting from Docker's volume management logic.
 
-## 4. Ressources
+## 4. Resources
 
-### Documentation et Références
+### Documentation & References
 * [Docker Documentation](https://docs.docker.com/)
 * [MariaDB Knowledge Base](https://mariadb.com/kb/en/)
 * [WordPress CLI Handbook](https://make.wordpress.org/cli/handbook/)
 * [Nginx Beginner's Guide](http://nginx.org/en/docs/beginners_guide.html)
 
-### Utilisation de l'IA
-Conformément aux directives de 42, l'Intelligence Artificielle (Gemini) a été utilisée comme collaborateur pédagogique pour les tâches suivantes :
-* **Débogage de scripts Shell :** Aide à la résolution des conditions de concurrence (race conditions) lors de l'initialisation de MariaDB.
-* **Explications Techniques :** Clarification des différences entre les Secrets Docker et les variables d'environnement.
-* **Documentation :** Rédaction et correction de `USER_DOC.md` et `README.md` pour garantir une syntaxe professionnelle.
-* **Optimisation du Makefile :** Amélioration de la règle `fclean` avec des filtres spécifiques.
+### Use of AI
+In accordance with 42's guidelines, Artificial Intelligence (Gemini) was used as a pedagogical collaborator for the following tasks:
+* **Shell Script Debugging:** Assistance in resolving race conditions during the MariaDB initialization process.
+* **Technical Explanations:** Clarifying the differences between Docker Secrets and standard environment variables.
+* **Documentation:** Drafting and refining `USER_DOC.md`, `DEV_DOC.md`, and `README.md` to ensure professional syntax and clarity.
+* **Makefile Optimization:** Improving the `fclean` rule with specific filtering logic.
 
 ---
 
-*Pour plus d'informations sur l'administration, veuillez vous référer au fichier `USER_DOC.md` situé dans le dépôt.*
+*For more detailed information on administration and development, please refer to the `USER_DOC.md` and `DEV_DOC.md` files located in the repository.*
