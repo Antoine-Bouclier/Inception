@@ -7,31 +7,31 @@ RESET = \033[0m
 all: up
 
 up:
-	@echo "$(GREEN)Création des dossiers de données...$(RESET)"
+	@echo "$(GREEN)Creating data directories...$(RESET)"
 	@mkdir -p $(DATA_PATH)/wordpress
 	@mkdir -p $(DATA_PATH)/mariadb
-	@echo "$(GREEN)Lancement des conteneurs...$(RESET)"
+	@echo "$(GREEN)Building and starting containers...$(RESET)"
 	@docker compose -f srcs/docker-compose.yml up -d --build
 
 down:
-	@echo "$(RED)Arrêt des conteneurs...$(RESET)"
+	@echo "$(RED)Stopping and removing containers...$(RESET)"
 	@docker compose -f srcs/docker-compose.yml down
 
 start:
-	@echo "$(GREEN)Démarrage des conteneurs existants...$(RESET)"
+	@echo "$(GREEN)Starting existing containers...$(RESET)"
 	@docker compose -f srcs/docker-compose.yml start
 
 stop:
-	@echo "$(RED)Arrêt des conteneurs...$(RESET)"
+	@echo "$(RED)Stopping running containers...$(RESET)"
 	@docker compose -f srcs/docker-compose.yml stop
 
 fclean: down
-	@echo "$(RED)Nettoyage complet en cours...$(RESET)"
-	@docker system prune -af
+	@echo "$(RED)Performing full cleanup...$(RESET)"
+	@docker image prune -af --filter "label=project=inception"
 	@sudo rm -rf $(DATA_PATH)/wordpress/*
 	@sudo rm -rf $(DATA_PATH)/mariadb/*
 	@docker volume rm $$(docker volume ls -q) 2>/dev/null || true
-	@echo "$(GREEN)Tout est propre !$(RESET)"
+	@echo "$(GREEN)Cleanup complete!$(RESET)"
 
 re: fclean all
 

@@ -1,5 +1,7 @@
 FROM	debian:bookworm
 
+LABEL	project="inception"
+
 # Install dependencies in one layer
 RUN	apt-get update && apt-get upgrade -y &&\
 	apt-get -y install wget \
