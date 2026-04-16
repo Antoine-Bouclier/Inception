@@ -31,5 +31,8 @@ RUN chmod +x /usr/local/bin/auto-config.sh
 
 ENTRYPOINT ["/usr/local/bin/auto-config.sh"]
 
+HEALTHCHECK     --interval=30s --timeout=5s --start-period=30s --retries=3 \
+		CMD wp db check | exit 1  
+
 # Run PHP-FPM in the foreground to keep the container alive
 CMD ["php-fpm8.2", "-F"]
