@@ -31,7 +31,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 		--admin_email=$WP_ADMIN_EMAIL \
 		--allow-root
 
-	# Create an additional non-admin user (often required by the subject)
+	# Create an additional non-admin user
 	wp user create $WP_USER_LOGIN $WP_USER_EMAIL \
 		--role=author \
 		--user_pass=$WP_USER_PWD \

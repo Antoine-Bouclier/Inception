@@ -4,7 +4,11 @@ LABEL		project="inception"
 
 #		nginx	-> HTTP web server
 #		openssl	-> lib that provide secure communications
-RUN		apt-get update && apt-get install -y --no-install-recommends nginx openssl
+RUN		apt-get update && apt-get install -y --no-install-recommends \
+		nginx \
+		openssl \
+		curl \
+		&& rm -rf /var/lib/apt/lists/*
 
 #		We redirect Nginx access logs to /dev/stdout (Standard Output).
 #		This allows 'docker logs <container>' to display real-time web traffic in your terminal.
@@ -33,6 +37,9 @@ RUN		ln -s /etc/nginx/site-available/nginx.conf /etc/nginx/sites-enabled/nginx.c
 RUN		rm -f /etc/nginx/sites-enabled/default
 
 EXPOSE		443
+
+HEALTHCHECK 	--interval=30s --timeout=10s --start-period=5s --retries=3 \
+    		CMD curl -fk https://localhost/ || exit 1
 
 #		Graceful shutdown -> finish handling current requests when the container is shutdown 
 STOPSIGNAL 	SIGQUIT

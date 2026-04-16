@@ -3,14 +3,13 @@
 *This project has been created as part of the 42 curriculum by abouclie.*
 
 ## 1. Description
-The **Inception** project is a major milestone in the 42 DevOps curriculum. Its primary goal is to broaden system administration knowledge by managing a complete infrastructure using **Docker**. The project involves setting up a secure, multi-service web stack (WordPress, MariaDB, and Nginx), where each component runs in its own dedicated and isolated container.
+Its primary goal is to broaden system administration knowledge by managing a complete infrastructure using **Docker**. The project involves setting up a secure, multi-service web stack (WordPress, MariaDB, and Nginx), where each component runs in its own dedicated and isolated container.
 
 The entire infrastructure is built "from scratch" using **Debian** as a base image, ensuring a deep understanding of container isolation, virtual network management, and data persistence.
 
 ## 2. Instructions
 
 ### Prerequisites
-* A Linux environment (VM or native).
 * **Docker** and **Docker Compose** installed.
 * The `make` utility.
 
@@ -63,8 +62,27 @@ In accordance with 42's guidelines, Artificial Intelligence (Gemini) was used as
 * **Shell Script Debugging:** Assistance in resolving race conditions during the MariaDB initialization process.
 * **Technical Explanations:** Clarifying the differences between Docker Secrets and standard environment variables.
 * **Documentation:** Drafting and refining `USER_DOC.md`, `DEV_DOC.md`, and `README.md` to ensure professional syntax and clarity.
-* **Makefile Optimization:** Improving the `fclean` rule with specific filtering logic.
 
 ---
 
 *For more detailed information on administration and development, please refer to the `USER_DOC.md` and `DEV_DOC.md` files located in the repository.*
+
+## 5. More informations
+
+### Make sure healthcheck is working
+
+Rename the binary command
+```
+docker exec -it mariadb mv /usr/bin/mysqladmin /usr/bin/mysqladmin_bak
+```
+
+Waiting until 3 attempts failed
+
+```
+docker inspect --format='{{json .State.Health}}' mariadb | jq
+```
+Checking the container
+
+```
+docker ps
+```
