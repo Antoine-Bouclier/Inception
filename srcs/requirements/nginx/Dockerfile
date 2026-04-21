@@ -38,9 +38,6 @@ RUN		rm -f /etc/nginx/sites-enabled/default
 
 EXPOSE		443
 
-HEALTHCHECK 	--interval=30s --timeout=10s --start-period=5s --retries=3 \
-    		CMD curl -fk https://localhost/ || exit 1
-
 #		Graceful shutdown -> finish handling current requests when the container is shutdown 
 STOPSIGNAL 	SIGQUIT
 

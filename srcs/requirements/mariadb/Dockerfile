@@ -14,9 +14,6 @@ COPY		tools/setup.sh /usr/local/bin/setup.sh
 
 RUN		chmod +x /usr/local/bin/setup.sh
 
-HEALTHCHECK	--interval=30s --timeout=5s --start-period=30s --retries=3 \
-    		CMD mysqladmin ping -u root -p$(cat /run/secrets/db_root_password) || exit 1
-
 ENTRYPOINT	["/usr/local/bin/setup.sh"]
 
 EXPOSE		3306

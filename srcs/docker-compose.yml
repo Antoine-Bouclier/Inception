@@ -12,6 +12,13 @@ services:
       - inception_net
     volumes:
       -  wordpress_data:/var/www/html
+    healthcheck:
+      test: ["CMD", "curl", "-fk", "https://localhost/"] 
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
     restart: always
     depends_on:
       - wordpress
@@ -30,6 +37,13 @@ services:
       - db_root_password
     volumes:
       - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin status -u root -p$$(cat /run/secrets/db_root_password)"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
 
   wordpress:
 
@@ -45,6 +59,13 @@ services:
       - wp_user_password
     volumes:
       - wordpress_data:/var/www/html
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ss -ln 2>/dev/null | grep :9000"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
     depends_on:
       - mariadb
 
