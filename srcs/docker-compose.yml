@@ -5,6 +5,7 @@ services:
   nginx:
 
     container_name: nginx
+    image: nginx
     build:  ./requirements/nginx/
     ports:  
       - "443:443"
@@ -28,6 +29,7 @@ services:
   mariadb:
 
     container_name: mariadb
+    image: mariadb
     build: ./requirements/mariadb/
     restart: always
     networks:
@@ -50,6 +52,7 @@ services:
   wordpress:
 
     container_name: wordpress
+    image: wordpress
     build:  ./requirements/wordpress
     networks:
       - inception_net
@@ -76,6 +79,7 @@ services:
 # Global Network Definitions
 networks:
   inception_net:
+    name: inception_net
     driver: bridge
 
 # Global Volume Definitions (Persistent Storage)
